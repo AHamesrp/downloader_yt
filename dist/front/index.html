@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Downloader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Karla:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-color: #1e293b;
+            --shadow: rgba(59, 130, 246, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Karla', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(96, 165, 250, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-left: 4px solid var(--accent-primary);
+            padding-left: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .main-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-primary) 50%, 
+                transparent 100%);
+            opacity: 0.5;
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .url-input-container {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--shadow);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        button {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-add {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+            min-width: 120px;
+        }
+
+        .btn-add:hover {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-download {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            width: auto;
+            max-width: 300px;
+            padding: 1.25rem 3rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .links-list {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .links-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .links-list::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 4px;
+        }
+
+        .links-list::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.2s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .link-item:hover {
+            border-color: var(--accent-primary);
+            transform: translateX(4px);
+        }
+
+        .link-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .link-url {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            margin-right: 1rem;
+        }
+
+        .btn-remove {
+            background: transparent;
+            color: var(--accent-secondary);
+            border: 1px solid var(--accent-secondary);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            min-width: 80px;
+        }
+
+        .btn-remove:hover {
+            background: var(--accent-secondary);
+            color: var(--bg-primary);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 200px;
+            color: var(--text-tertiary);
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .status-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .status-message {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .status-message.info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .download-progress {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .download-progress.show {
+            display: block;
+        }
+
+        .progress-item {
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--shadow);
+        }
+
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .url-input-container {
+                flex-direction: column;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>YT Downloader</h1>
+            <p class="subtitle">Download de vídeos sem direitos autorais</p>
+        </header>
+
+        <div class="main-card">
+            <div class="input-section">
+                <label>Adicionar URL do YouTube</label>
+                <div class="url-input-container">
+                    <input 
+                        type="text" 
+                        id="urlInput" 
+                        placeholder="https://youtube.com/watch?v=..."
+                        autocomplete="off"
+                    >
+                    <button class="btn-add" onclick="addLink()">
+                        + Adicionar
+                    </button>
+                </div>
+            </div>
+
+            <label>Links na fila (<span id="linkCount">0</span>)</label>
+            <div class="links-list" id="linksList">
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    <p>Nenhum link adicionado ainda.<br>Cole uma URL do YouTube acima.</p>
+                </div>
+            </div>
+
+            <button class="btn-download" id="downloadBtn" onclick="startDownload()" disabled>
+                Iniciar Download
+            </button>
+
+            <div class="status-section">
+                <div class="status-message" id="statusMessage"></div>
+                <div class="download-progress" id="downloadProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let links = [];
+        let progressInterval = null;
+
+        // Carrega links salvos ao iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLinks = localStorage.getItem('ytDownloaderLinks');
+            if (savedLinks) {
+                links = JSON.parse(savedLinks);
+                updateLinksList();
+            }
+        });
+
+        // Adiciona link ao pressionar Enter
+        document.getElementById('urlInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addLink();
+            }
+        });
+
+        function addLink() {
+            const input = document.getElementById('urlInput');
+            const url = input.value.trim();
+
+            if (!url) {
+                showStatus('Digite uma URL válida', 'error');
+                return;
+            }
+
+            // Validação básica de URL do YouTube
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+            if (!youtubeRegex.test(url)) {
+                showStatus('URL do YouTube inválida', 'error');
+                return;
+            }
+
+            // Verifica duplicatas
+            if (links.includes(url)) {
+                showStatus('Este link já foi adicionado', 'error');
+                return;
+            }
+
+            links.push(url);
+            input.value = '';
+            updateLinksList();
+            saveLinks();
+            showStatus('Link adicionado com sucesso!', 'success');
+        }
+
+        function removeLink(index) {
+            links.splice(index, 1);
+            updateLinksList();
+            saveLinks();
+            showStatus('Link removido', 'info');
+        }
+
+        function updateLinksList() {
+            const container = document.getElementById('linksList');
+            const count = document.getElementById('linkCount');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            count.textContent = links.length;
+            downloadBtn.disabled = links.length === 0;
+
+            if (links.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <p>Nenhum link adicionado ainda.<br>Cole uma URL do YouTube acima.</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = links.map((link, index) => `
+                    <div class="link-item">
+                        <span class="link-url" title="${link}">${link}</span>
+                        <button class="btn-remove" onclick="removeLink(${index})">Remover</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function saveLinks() {
+            localStorage.setItem('ytDownloaderLinks', JSON.stringify(links));
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type} show`;
+
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 4000);
+        }
+
+        async function startDownload() {
+            if (links.length === 0) return;
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            const progressContainer = document.getElementById('downloadProgress');
+
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Processando...';
+            progressContainer.innerHTML = '';
+            progressContainer.classList.add('show');
+
+            showStatus(`Iniciando download de ${links.length} vídeo(s)...`, 'info');
+
+            // Limpa qualquer polling anterior
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+
+            // Função para buscar o progresso no backend periodicamente
+            const fetchProgress = async () => {
+                try {
+                    const res = await fetch('http://localhost:5000/api/progress');
+                    if (!res.ok) return;
+                    const data = await res.json();
+
+                    const overall = data.percent ?? 0;
+                    const currentPercent = data.current_video_percent ?? 0;
+                    const idx = data.index ?? 0;
+                    const total = data.total ?? links.length;
+                    const currentUrl = data.current_video || '';
+
+                    const progressHTML = `
+                        <div class="progress-item">
+                            <div class="progress-title">
+                                ${data.message || `Baixando vídeo ${idx}/${total}`}<br>
+                                <small style="color: var(--text-tertiary);">
+                                    ${overall}% geral • ${currentPercent}% do vídeo atual
+                                </small><br>
+                                <small style="color: var(--text-tertiary);">
+                                    ${currentUrl}
+                                </small>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${overall}%;"></div>
+                            </div>
+                        </div>
+                    `;
+
+                    progressContainer.innerHTML = progressHTML;
+
+                    if (data.status === 'done' || data.status === 'error') {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                } catch (e) {
+                    // Silencia erros de polling
+                }
+            };
+
+            // Inicia o polling de progresso a cada 1 segundo
+            progressInterval = setInterval(fetchProgress, 1000);
+            // Chama uma vez imediatamente
+            fetchProgress();
+
+            try {
+                const response = await fetch('http://localhost:5000/api/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ urls: links })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erro no servidor');
+                }
+
+                showStatus(data.message || 'Downloads concluídos com sucesso!', 'success');
+
+            } catch (error) {
+                showStatus(`Erro: ${error.message}`, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Iniciar Download';
+
+                // Garante que a barra fique em 100% ao final, se o backend concluiu
+                setTimeout(() => {
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
