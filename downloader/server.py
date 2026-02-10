@@ -150,14 +150,14 @@ def download_videos():
                 "status": "done",
                 "percent": 100,
                 "current_video_percent": 100,
-                "message": f"Downloads concluídos para {total_videos} item(ns).",
+                "message": f"Seus {total_videos} vídeo(s) foram salvos com sucesso! ✅",
             }
         )
 
         return jsonify(
             {
                 "status": "ok",
-                "message": f"Downloads concluídos para {total_videos} item(ns).",
+                "message": f"Seus {total_videos} vídeo(s) foram salvos com sucesso em ~/Downloads! ✅",
                 "count": total_videos,
             }
         )
