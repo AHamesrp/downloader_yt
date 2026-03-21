@@ -418,41 +418,6 @@
             box-shadow: 0 0 8px var(--shadow);
         }
 
-        .attention {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid var(--accent-primary);
-            border-radius: 8px;
-            display: block;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        .attention-message {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--accent-primary);
-            text-align: center;
-            padding: 0.5rem 0;
-        }
-
-        .attention-message p {
-            margin: 0;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-        }
-
-        .attention-message a {
-            color: var(--accent-secondary);
-            text-decoration: none;
-            border-bottom: 1px dashed var(--accent-secondary);
-            transition: all 0.2s ease;
-        }
-
-        .attention-message a:hover {
-            color: var(--text-primary);
-            border-bottom-color: var(--text-primary);
-        }
 
         @media (max-width: 768px) {
             body {
@@ -518,10 +483,10 @@
             <div class="status-section">
                 <div class="status-message" id="statusMessage"></div>
                 <div class="download-progress" id="downloadProgress"></div>
-                <div class="attention" id="attentionBox">
-                    <div class="attention-message">
-                        <p>* Seus videos estão em C:\Users\SEU USUARIO\Downloads *</p>
-                    </div>
+            </div>
+            <div class="attention" id="atten-tion">
+                <div class="attention-message">
+                    <p>* Seus vídeos estão em C:\Users\SEU USUARIO\Downloads *</p>
                 </div>
             </div>
         </div>
@@ -626,7 +591,13 @@
         }
 
         function showAttentionBox() {
-            // A caixa de atenção agora é sempre visível
+            const attentionBox = document.getElementById('attentionBox');
+            attentionBox.classList.add('show');
+            
+            // Auto-hide após 8 segundos
+            setTimeout(() => {
+                attentionBox.classList.remove('show');
+            }, 8000);
         }
 
         async function startDownload() {
@@ -709,7 +680,8 @@
                     throw new Error(data.error || 'Erro no servidor');
                 }
 
-                showStatus(data.message || 'Downloads concluídos com sucesso!', 'success');
+                showStatus(data.message || 'Downloads concluídos com sucesso!🎉', 'success');
+
             } catch (error) {
                 showStatus(`Erro: ${error.message}`, 'error');
             } finally {

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar — AuroraYt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-color: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Karla', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+        .card {
+            width: 100%;
+            max-width: 22rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .sub {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.65rem 0.85rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            margin-bottom: 0.85rem;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .tabs button {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            cursor: pointer;
+        }
+        .tabs button.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .btn-primary {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-primary);
+            color: #fff;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.25rem;
+        }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .msg {
+            font-size: 0.8125rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            display: none;
+        }
+        .msg.show { display: block; }
+        .msg.err {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+        .msg.ok {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: var(--accent-secondary);
+        }
+        .link-app {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8125rem;
+            color: var(--text-tertiary);
+        }
+        .link-app a { color: var(--accent-secondary); }
+        #step2fa { display: none; }
+        #step2fa.show { display: block; }
+        #formsWrap.hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>AuroraYt</h1>
+        <p class="sub" id="stepSubtitle">Entre com e-mail e senha. Enviaremos um código por e-mail.</p>
+
+        <div id="msg" class="msg"></div>
+
+        <div id="step2fa">
+            <label for="codeInput">Código de 6 dígitos</label>
+            <input type="text" id="codeInput" inputmode="numeric" maxlength="8" autocomplete="one-time-code" placeholder="000000">
+            <button type="button" class="btn-primary" id="verifyBtn">Confirmar código</button>
+            <p class="link-app"><a href="#" id="backLogin">Voltar ao login</a></p>
+        </div>
+
+        <div id="formsWrap">
+            <div class="tabs" role="tablist">
+                <button type="button" class="active" data-tab="login">Entrar</button>
+                <button type="button" data-tab="register">Criar conta</button>
+            </div>
+
+            <div id="panel-login" class="panel active">
+                <label for="loginEmail">E-mail</label>
+                <input type="email" id="loginEmail" autocomplete="username">
+                <label for="loginPass">Senha</label>
+                <input type="password" id="loginPass" autocomplete="current-password">
+                <button type="button" class="btn-primary" id="loginBtn">Continuar</button>
+            </div>
+
+            <div id="panel-register" class="panel">
+                <label for="regEmail">E-mail</label>
+                <input type="email" id="regEmail" autocomplete="username">
+                <label for="regPass">Senha (mín. 8 caracteres)</label>
+                <input type="password" id="regPass" autocomplete="new-password">
+                <button type="button" class="btn-primary" id="regBtn">Cadastrar</button>
+            </div>
+        </div>
+
+        <p class="link-app"><a href="/">Ir para o app</a></p>
+    </div>
+
+    <script>
+        const msgEl = document.getElementById('msg');
+        const formsWrap = document.getElementById('formsWrap');
+        const step2fa = document.getElementById('step2fa');
+        const stepSubtitle = document.getElementById('stepSubtitle');
+
+        function showMsg(text, ok) {
+            msgEl.textContent = text;
+            msgEl.className = 'msg show ' + (ok ? 'ok' : 'err');
+        }
+        function hideMsg() {
+            msgEl.className = 'msg';
+            msgEl.textContent = '';
+        }
+
+        document.querySelectorAll('.tabs button').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tabs button').forEach((b) => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+                document.getElementById('panel-' + tab).classList.add('active');
+                hideMsg();
+            });
+        });
+
+        async function checkSession() {
+            const r = await fetch('/api/auth/me', { credentials: 'include' });
+            const d = await r.json();
+            if (d.authenticated) {
+                window.location.replace('/');
+                return;
+            }
+            if (d.pending2fa) {
+                formsWrap.classList.add('hidden');
+                step2fa.classList.add('show');
+                stepSubtitle.textContent = 'Digite o código que enviamos para ' + (d.email || 'seu e-mail') + '.';
+            }
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            hideMsg();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPass').value;
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    showMsg(data.error || 'Não foi possível entrar.', false);
+                    return;
+                }
+                if (data.need2fa) {
+                    formsWrap.classList.add('hidden');
+                    step2fa.classList.add('show');
+                    stepSubtitle.textContent = data.emailSent
+                        ? 'Enviamos um código para ' + (data.emailHint || 'seu e-mail') + '.'
+                        : (data.message || 'Verifique o código (e-mail pode não ter sido enviado).');
+                    if (!data.emailSent && data.message) showMsg(data.message, false);
+                    document.getElementById('codeInput').focus();
+                }
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('regBtn').addEventListener('click', async () => {
+            hideMsg();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value;
+            const btn = document.getElementById('regBtn');
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    showMsg(data.error || 'Não foi possível cadastrar.', false);
+                    return;
+                }
+                showMsg('Conta criada. Agora você pode entrar.', true);
+                document.querySelector('.tabs button[data-tab="login"]').click();
+                document.getElementById('loginEmail').value = email;
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            hideMsg();
+            const code = document.getElementById('codeInput').value.replace(/\s/g, '');
+            const btn = document.getElementById('verifyBtn');
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/auth/verify-2fa', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    showMsg(data.error || 'Código inválido.', false);
+                    return;
+                }
+                window.location.replace('/');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('backLogin').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+            step2fa.classList.remove('show');
+            formsWrap.classList.remove('hidden');
+            hideMsg();
+            stepSubtitle.textContent = 'Entre com e-mail e senha. Enviaremos um código por e-mail.';
+        });
+
+        checkSession();
+    </script>
+</body>
+</html>

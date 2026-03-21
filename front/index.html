@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuroraYt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #60a5fa;
+            --text-primary: #7ebbf8;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-color: #1e293b;
+            --shadow-soft: rgba(0, 0, 0, 0.35);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Karla', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem clamp(1rem, 4vw, 2.75rem) 3rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: min(1180px, 100%);
+            position: relative;
+        }
+
+        header {
+            margin-bottom: 1.75rem;
+        }
+
+        h1 {
+            font-size: 2.00rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 62ch;
+        }
+
+        .main-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            box-shadow: 0 12px 40px var(--shadow-soft);
+        }
+
+        .queue-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-height: 0;
+        }
+
+        .queue-panel .links-list {
+            margin-top: 0;
+        }
+
+        @media (min-width: 900px) {
+            .main-card {
+                display: grid;
+                grid-template-columns: minmax(300px, 1fr) minmax(340px, 1.2fr);
+                grid-template-rows: auto auto auto auto;
+                column-gap: 2rem;
+                row-gap: 1.25rem;
+                padding: 2rem 2rem;
+            }
+
+            .input-section {
+                grid-column: 1;
+                grid-row: 1;
+                margin-bottom: 0;
+            }
+
+            .queue-panel {
+                grid-column: 2;
+                grid-row: 1 / -1;
+                align-self: stretch;
+            }
+
+            .queue-panel .links-list {
+                flex: 1;
+                min-height: 14rem;
+                max-height: min(520px, 58vh);
+                margin-top: 0;
+            }
+
+            .btn-download {
+                grid-column: 1;
+                grid-row: 2;
+                margin-top: 0;
+            }
+
+            .status-section {
+                grid-column: 1;
+                grid-row: 3;
+                margin-top: 0;
+                padding-top: 1.25rem;
+            }
+
+            .foot-note {
+                grid-column: 1;
+                grid-row: 4;
+                margin-top: 0;
+            }
+        }
+
+        .input-section {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .hint {
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            margin-top: 0.25rem;
+        }
+
+        .url-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 12rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        button {
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            padding: 0.75rem 1.125rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease, opacity 0.2s ease;
+        }
+
+        .btn-add {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-add:hover {
+            background: #273549;
+            border-color: #334155;
+        }
+
+        .btn-download {
+            background: var(--accent-primary);
+            color: #fff;
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            font-size: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .btn-download:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        .queue-heading {
+            margin-top: 0.25rem;
+        }
+
+        .links-list {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem;
+            min-height: 11rem;
+            max-height: 22rem;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+
+        .links-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .links-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .links-list::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 6px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-bottom: 0.35rem;
+            border: 1px solid transparent;
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+
+        .link-item:hover {
+            border-color: rgba(59, 130, 246, 0.25);
+            background: #131c2e;
+        }
+
+        .link-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .link-url {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .btn-remove {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8125rem;
+            flex-shrink: 0;
+        }
+
+        .btn-remove:hover {
+            color: var(--text-primary);
+            border-color: var(--text-tertiary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 10rem;
+            color: var(--text-tertiary);
+            text-align: center;
+            padding: 1.5rem 1rem;
+        }
+
+        .empty-state svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.75rem;
+            opacity: 0.35;
+        }
+
+        .empty-state p {
+            font-size: 0.9375rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .status-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .status-message {
+            font-size: 0.9375rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-message.success {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: var(--accent-secondary);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        .status-message.info {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .download-progress {
+            display: none;
+            margin-top: 0.75rem;
+        }
+
+        .download-progress.show {
+            display: block;
+        }
+
+        .progress-item {
+            padding: 0.875rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .progress-title {
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            margin-bottom: 0.65rem;
+            line-height: 1.45;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .progress-title small {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 0.75rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--bg-secondary);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-primary);
+            width: 0%;
+            border-radius: 99px;
+            transition: width 0.35s ease;
+        }
+
+        .foot-note {
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .foot-note p {
+            font-size: 0.8125rem;
+            color: var(--text-tertiary);
+            line-height: 1.5;
+        }
+
+        .site-footer {
+            margin-top: 2rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .site-footer p {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            line-height: 1.5;
+        }
+
+        .user-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8125rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            color: var(--text-primary);
+            border-color: var(--text-tertiary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.25rem 1rem 2rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .main-card {
+                padding: 1.35rem 1.1rem;
+            }
+
+            .url-input-container {
+                flex-direction: column;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-bar" id="userBar">
+            <span class="user-email" id="userEmailDisplay"></span>
+            <button type="button" class="btn-logout" id="logoutBtn">Sair</button>
+        </div>
+        <header>
+            <h1>AuroraYt</h1>
+            <p class="subtitle">Cole os links dos videos do YouTube e baixe no seu computador.</p>
+        </header>
+
+        <div class="main-card">
+            <div class="input-section">
+                <label for="urlInput">Link do YouTube</label>
+                <p class="hint">Cole o endereço do vídeo e clique em adicionar. Pode colocar vários de uma vez.</p>
+                <div class="url-input-container">
+                    <input
+                        type="text"
+                        id="urlInput"
+                        placeholder="Ex.: youtube.com/watch?v=…"
+                        autocomplete="off"
+                    >
+                    <button type="button" class="btn-add" onclick="addLink()">Adicionar à lista</button>
+                </div>
+            </div>
+
+            <div class="queue-panel">
+                <div class="queue-heading">
+                    <label>Na fila <span style="font-weight:400;color:var(--text-tertiary)">(<span id="linkCount">0</span>)</span></label>
+                </div>
+                <div class="links-list" id="linksList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <path d="M12 8v8M8 12h8"></path>
+                            <circle cx="12" cy="12" r="9"></circle>
+                        </svg>
+                        <p>Nada por aqui ainda. Quando você adicionar links, eles aparecem nesta lista.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn-download" id="downloadBtn" onclick="startDownload()" disabled>
+                Baixar agora
+            </button>
+
+            <div class="status-section">
+                <div class="status-message" id="statusMessage"></div>
+                <div class="download-progress" id="downloadProgress"></div>
+            </div>
+            <div class="foot-note">
+                <p>Os arquivos são salvos na pasta <strong style="color:var(--text-secondary)">Downloads</strong> do seu usuário no Windows.</p>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <p>© 2026 AuroraYt — Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        let links = [];
+        let progressInterval = null;
+
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+
+        function escapeHtml(s) {
+            if (s == null || s === '') return '';
+            const d = document.createElement('div');
+            d.textContent = String(s);
+            return d.innerHTML;
+        }
+
+        function sanitizeStoredLinks(raw) {
+            if (!Array.isArray(raw)) return [];
+            const out = [];
+            const seen = new Set();
+            for (const item of raw) {
+                if (typeof item !== 'string') continue;
+                const u = item.trim();
+                if (!u || u.length > 2048 || !youtubeRegex.test(u)) continue;
+                if (seen.has(u)) continue;
+                seen.add(u);
+                out.push(u);
+            }
+            return out;
+        }
+
+        async function ensureAuthenticated() {
+            const r = await fetch('/api/auth/me', { credentials: 'include' });
+            const d = await r.json();
+            if (d.pending2fa) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            if (!d.authenticated) {
+                window.location.href = '/login.html';
+                return false;
+            }
+            const el = document.getElementById('userEmailDisplay');
+            if (el) el.textContent = d.email || '';
+            return true;
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+            window.location.href = '/login.html';
+        });
+
+        // Carrega links salvos ao iniciar (não confia no conteúdo do localStorage)
+        window.addEventListener('DOMContentLoaded', async () => {
+            const ok = await ensureAuthenticated();
+            if (!ok) return;
+
+            const savedLinks = localStorage.getItem('ytDownloaderLinks');
+            if (savedLinks) {
+                try {
+                    const parsed = JSON.parse(savedLinks);
+                    links = sanitizeStoredLinks(parsed);
+                    if (links.length) saveLinks();
+                    updateLinksList();
+                } catch {
+                    localStorage.removeItem('ytDownloaderLinks');
+                }
+            }
+        });
+
+        // Adiciona link ao pressionar Enter
+        document.getElementById('urlInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addLink();
+            }
+        });
+
+        function addLink() {
+            const input = document.getElementById('urlInput');
+            const url = input.value.trim();
+
+            if (!url) {
+                showStatus('Cola um link primeiro.', 'error');
+                return;
+            }
+
+            if (!youtubeRegex.test(url)) {
+                showStatus('Esse link não parece ser do YouTube. Confere se copiou certinho?', 'error');
+                return;
+            }
+
+            // Verifica duplicatas
+            if (links.includes(url)) {
+                showStatus('Esse link já está na lista.', 'error');
+                return;
+            }
+
+            links.push(url);
+            input.value = '';
+            updateLinksList();
+            saveLinks();
+            showStatus('Pronto, link adicionado.', 'success');
+        }
+
+        function removeLink(index) {
+            links.splice(index, 1);
+            updateLinksList();
+            saveLinks();
+            showStatus('Removido da lista.', 'info');
+        }
+
+        function renderEmptyQueue(container) {
+            container.replaceChildren();
+            const wrap = document.createElement('div');
+            wrap.className = 'empty-state';
+            wrap.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                    <path d="M12 8v8M8 12h8"></path>
+                    <circle cx="12" cy="12" r="9"></circle>
+                </svg>
+                <p>Nada por aqui ainda. Quando você adicionar links, eles aparecem nesta lista.</p>
+            `;
+            container.appendChild(wrap);
+        }
+
+        function updateLinksList() {
+            const container = document.getElementById('linksList');
+            const count = document.getElementById('linkCount');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            count.textContent = links.length;
+            downloadBtn.disabled = links.length === 0;
+
+            if (links.length === 0) {
+                renderEmptyQueue(container);
+                return;
+            }
+
+            container.replaceChildren();
+            links.forEach((link, index) => {
+                const row = document.createElement('div');
+                row.className = 'link-item';
+                const span = document.createElement('span');
+                span.className = 'link-url';
+                span.title = link;
+                span.textContent = link;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn-remove';
+                btn.textContent = 'Tirar';
+                btn.addEventListener('click', () => removeLink(index));
+                row.appendChild(span);
+                row.appendChild(btn);
+                container.appendChild(row);
+            });
+        }
+
+        function saveLinks() {
+            localStorage.setItem('ytDownloaderLinks', JSON.stringify(links));
+        }
+
+        function showStatus(message, type = 'info') {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message ${type} show`;
+
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 4000);
+        }
+
+        async function startDownload() {
+            if (links.length === 0) return;
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            const progressContainer = document.getElementById('downloadProgress');
+
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = 'Um momento…';
+            progressContainer.innerHTML = '';
+            progressContainer.classList.add('show');
+
+            showStatus(`Começando: ${links.length} vídeo(s) na fila.`, 'info');
+
+            // Limpa qualquer polling anterior
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+
+            // Função para buscar o progresso no backend periodicamente
+            const fetchProgress = async () => {
+                try {
+                    const res = await fetch('/api/progress', { credentials: 'include' });
+                    if (!res.ok) return;
+                    const data = await res.json();
+
+                    const overall = data.percent ?? 0;
+                    const currentPercent = data.current_video_percent ?? 0;
+                    const idx = data.index ?? 0;
+                    const total = data.total ?? links.length;
+                    const currentUrl = data.current_video || '';
+
+                    const msg = escapeHtml(data.message || `Baixando ${idx} de ${total}`);
+                    const urlLine = currentUrl
+                        ? `<small style="color: var(--text-tertiary);word-break:break-all;">${escapeHtml(currentUrl)}</small>`
+                        : '';
+                    progressContainer.innerHTML = `
+                        <div class="progress-item">
+                            <div class="progress-title">
+                                ${msg}
+                                <small style="color: var(--text-tertiary);">${overall}% no total · ${currentPercent}% deste vídeo</small>
+                                ${urlLine}
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${overall}%;"></div>
+                            </div>
+                        </div>
+                    `;
+
+                    if (data.status === 'done' || data.status === 'error') {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                } catch (e) {
+                    // Silencia erros de polling
+                }
+            };
+
+            // Inicia o polling de progresso a cada 1 segundo
+            progressInterval = setInterval(fetchProgress, 1000);
+            // Chama uma vez imediatamente
+            fetchProgress();
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ urls: links })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Erro no servidor');
+                }
+
+                showStatus(data.message || 'Tudo certo, downloads concluídos.', 'success');
+
+            } catch (error) {
+                showStatus(`Deu problema: ${error.message}`, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = 'Baixar agora';
+
+                // Garante que a barra fique em 100% ao final, se o backend concluiu
+                setTimeout(() => {
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                        progressInterval = null;
+                    }
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
